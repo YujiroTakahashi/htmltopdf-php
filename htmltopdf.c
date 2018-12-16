@@ -18,9 +18,9 @@ void warning(wkhtmltopdf_converter * c, const char * msg) {
 	fprintf(stderr, "Warning: %s\n", msg);
 }
 
-/* {{{ string htmltopdf(string $url, string $output)
+/* {{{ string html2pdf(string $url, string $output)
  */
-PHP_FUNCTION(htmltopdf)
+PHP_FUNCTION(html2pdf)
 {
 	wkhtmltopdf_global_settings * gs;
 	wkhtmltopdf_object_settings * os;
@@ -32,50 +32,21 @@ PHP_FUNCTION(htmltopdf)
 	char *output;
 	size_t output_len;
 
-	ZEND_PARSE_PARAMETERS_START(0, 1)
+	ZEND_PARSE_PARAMETERS_START(2, 2)
 		Z_PARAM_STRING(url, url_len)
 		Z_PARAM_STRING(output, output_len)
 	ZEND_PARSE_PARAMETERS_END();
 
-	/* Init wkhtmltopdf in graphics less mode */
 	wkhtmltopdf_init(false);
-
-	/*
-	 * Create a global settings object used to store options that are not
-	 * related to input objects, note that control of this object is parsed to
-	 * the converter later, which is then responsible for freeing it
-	 */
 	gs = wkhtmltopdf_create_global_settings();
-	/* We want the result to be storred in the file called test.pdf */
 	wkhtmltopdf_set_global_setting(gs, "out", "test.pdf");
-	wkhtmltopdf_set_global_setting(gs, "load.cookieJar", "myjar.jar");
-
-	/*
-	 * Create a input object settings object that is used to store settings
-	 * related to a input object, note again that control of this object is parsed to
-	 * the converter later, which is then responsible for freeing it
-	 */
 	os = wkhtmltopdf_create_object_settings();
-	/* We want to convert to convert the qstring documentation page */
 	wkhtmltopdf_set_object_setting(os, "page", "https://www.yahoo.co.jp");
-
-	/* Create the actual converter object used to convert the pages */
 	c = wkhtmltopdf_create_converter(gs);
-
-	/* Call the error function when an error occurs */
 	wkhtmltopdf_set_error_callback(c, error);
-
-	/* Call the warning function when a warning is issued */
 	wkhtmltopdf_set_warning_callback(c, warning);
-
-	/*
-	 * Add the the settings object describing the qstring documentation page
-	 * to the list of pages to convert. Objects are converted in the order in which
-	 * they are added
-	 */
 	wkhtmltopdf_add_object(c, os, NULL);
 
-	/* Perform the actual conversion */
 	if (!wkhtmltopdf_convert(c)) {
 		fprintf(stderr, "Conversion failed!");
 	}
@@ -83,8 +54,6 @@ PHP_FUNCTION(htmltopdf)
 
 	wkhtmltopdf_destroy_converter(c);
 	wkhtmltopdf_deinit();
-
-	retval = strpprintf(0, "Hello %s", var);
 
 	RETURN_LONG(code);
 }
@@ -114,10 +83,8 @@ PHP_MINFO_FUNCTION(htmltopdf)
 
 /* {{{ arginfo
  */
-ZEND_BEGIN_ARG_INFO(arginfo_htmltopdf_test1, 0)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_htmltopdf_test2, 0)
+ZEND_BEGIN_ARG_INFO(arginfo_html2pdf, 0)
+	ZEND_ARG_INFO(0, str)
 	ZEND_ARG_INFO(0, str)
 ZEND_END_ARG_INFO()
 /* }}} */
@@ -125,8 +92,7 @@ ZEND_END_ARG_INFO()
 /* {{{ htmltopdf_functions[]
  */
 static const zend_function_entry htmltopdf_functions[] = {
-	PHP_FE(htmltopdf_test1,		arginfo_htmltopdf_test1)
-	PHP_FE(htmltopdf_test2,		arginfo_htmltopdf_test2)
+	PHP_FE(html2pdf, arginfo_html2pdf)
 	PHP_FE_END
 };
 /* }}} */

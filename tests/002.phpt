@@ -8,7 +8,7 @@ if (!extension_loaded('htmltopdf')) {
 ?>
 --FILE--
 <?php
-$ret = htmltopdf('https://www.yahoo.co.jp/', 'yahoo.pdf');
+$ret = html2pdf('https://www.yahoo.co.jp/', 'yahoo.pdf');
 
 var_dump($ret);
 ?>
