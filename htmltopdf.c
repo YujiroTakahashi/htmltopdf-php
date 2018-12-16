@@ -39,9 +39,10 @@ PHP_FUNCTION(html2pdf)
 
 	wkhtmltopdf_init(false);
 	gs = wkhtmltopdf_create_global_settings();
-	wkhtmltopdf_set_global_setting(gs, "out", "test.pdf");
+	wkhtmltopdf_set_global_setting(gs, "out", output);
+
 	os = wkhtmltopdf_create_object_settings();
-	wkhtmltopdf_set_object_setting(os, "page", "https://www.yahoo.co.jp");
+	wkhtmltopdf_set_object_setting(os, "page", url);
 	c = wkhtmltopdf_create_converter(gs);
 	wkhtmltopdf_set_error_callback(c, error);
 	wkhtmltopdf_set_warning_callback(c, warning);
