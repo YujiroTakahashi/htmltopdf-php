@@ -26,18 +26,12 @@ edit your php.ini and add:
 ### <a name="__construct">int html2pdf(string url, string output)
 
 ```php
-ob_start();
-$size = html2pdf("https://www.yahoo.co.jp/");
-$buf = ob_get_clean();
-
-if (0 != $err_code) {
-  exit('error:'.$err_code);
-}
+$buf = html2pdf("https://www.yahoo.co.jp/");
 
 header('Content-Type: application/pdf');
-header('Content-Length: '. $size);
+header('Content-Length: '. strlen($buf));
 header('Content-Disposition: attachment; filename="yahoo.pdf"');
-echo $size;
+echo $buf;
 ```
 
 -----

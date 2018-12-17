@@ -26,11 +26,9 @@ PHP_FUNCTION(html2pdf)
 	wkhtmltopdf_object_settings * os;
 	wkhtmltopdf_converter * c;
 
-	long size;
+	long len;
 	char *url;
 	size_t url_len;
-	char *output;
-	size_t output_len;
 	const unsigned char *data;
 
 	ZEND_PARSE_PARAMETERS_START(1, 1)
@@ -50,14 +48,12 @@ PHP_FUNCTION(html2pdf)
 		fprintf(stderr, "Conversion failed!");
 	}
 	if (0 == wkhtmltopdf_http_error_code(c)) {
-		size = wkhtmltopdf_get_output(c, &data);
-		php_printf("%s", data);
+		len = wkhtmltopdf_get_output(c, &data);
+		ZVAL_STRINGL(return_value, data, len);
 	}
 	
 	wkhtmltopdf_destroy_converter(c);
 	wkhtmltopdf_deinit();
-
-	RETURN_LONG(size);
 }
 /* }}}*/
 
