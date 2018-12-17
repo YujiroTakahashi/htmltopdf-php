@@ -27,7 +27,7 @@ edit your php.ini and add:
 
 ```php
 ob_start();
-$err_code = html2pdf("https://www.yahoo.co.jp/", "-");
+$size = html2pdf("https://www.yahoo.co.jp/");
 $buf = ob_get_clean();
 
 if (0 != $err_code) {
@@ -35,8 +35,9 @@ if (0 != $err_code) {
 }
 
 header('Content-Type: application/pdf');
-header('Content-Length: '. sizeof($buf));
+header('Content-Length: '. $size);
 header('Content-Disposition: attachment; filename="yahoo.pdf"');
+echo $size;
 ```
 
 -----

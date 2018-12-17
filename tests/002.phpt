@@ -8,9 +8,11 @@ if (!extension_loaded('htmltopdf')) {
 ?>
 --FILE--
 <?php
-$ret = html2pdf('https://www.yahoo.co.jp/', 'yahoo.pdf');
+ob_start();
+$size = html2pdf("https://www.yahoo.co.jp/");
+ob_end_clean();
 
-var_dump($ret);
+var_dump($size);
 ?>
 --EXPECT--
-int(0)
+int(128511)

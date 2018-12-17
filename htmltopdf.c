@@ -18,7 +18,7 @@ void warning(wkhtmltopdf_converter * c, const char * msg) {
 	fprintf(stderr, "Warning: %s\n", msg);
 }
 
-/* {{{ string html2pdf(string $url, string $output)
+/* {{{ string html2pdf(string $url)
  */
 PHP_FUNCTION(html2pdf)
 {
@@ -26,21 +26,19 @@ PHP_FUNCTION(html2pdf)
 	wkhtmltopdf_object_settings * os;
 	wkhtmltopdf_converter * c;
 
-	int code;
+	long size;
 	char *url;
 	size_t url_len;
 	char *output;
 	size_t output_len;
+	const unsigned char *data;
 
-	ZEND_PARSE_PARAMETERS_START(2, 2)
+	ZEND_PARSE_PARAMETERS_START(1, 1)
 		Z_PARAM_STRING(url, url_len)
-		Z_PARAM_STRING(output, output_len)
 	ZEND_PARSE_PARAMETERS_END();
 
 	wkhtmltopdf_init(false);
 	gs = wkhtmltopdf_create_global_settings();
-	wkhtmltopdf_set_global_setting(gs, "out", output);
-
 	os = wkhtmltopdf_create_object_settings();
 	wkhtmltopdf_set_object_setting(os, "page", url);
 	c = wkhtmltopdf_create_converter(gs);
@@ -51,12 +49,15 @@ PHP_FUNCTION(html2pdf)
 	if (!wkhtmltopdf_convert(c)) {
 		fprintf(stderr, "Conversion failed!");
 	}
-	code = wkhtmltopdf_http_error_code(c);
-
+	if (0 == wkhtmltopdf_http_error_code(c)) {
+		size = wkhtmltopdf_get_output(c, &data);
+		php_printf("%s", data);
+	}
+	
 	wkhtmltopdf_destroy_converter(c);
 	wkhtmltopdf_deinit();
 
-	RETURN_LONG(code);
+	RETURN_LONG(size);
 }
 /* }}}*/
 
@@ -85,7 +86,6 @@ PHP_MINFO_FUNCTION(htmltopdf)
 /* {{{ arginfo
  */
 ZEND_BEGIN_ARG_INFO(arginfo_html2pdf, 0)
-	ZEND_ARG_INFO(0, str)
 	ZEND_ARG_INFO(0, str)
 ZEND_END_ARG_INFO()
 /* }}} */
