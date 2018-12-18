@@ -1,5 +1,6 @@
 *.lo
 *.la
+*.pdf
 .libs
 .vscode
 acinclude.m4
@@ -28,6 +29,7 @@ missing
 mkinstalldirs
 modules
 run-tests.php
+tmp-php.ini
 tests/*/*.diff
 tests/*/*.out
 tests/*/*.php
