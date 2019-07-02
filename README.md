@@ -23,7 +23,7 @@ edit your php.ini and add:
 
 -----
 
-### <a name="__construct">int html2pdf(string url, string output)
+### <a name="__construct">int html2pdf(string url)
 
 ```php
 $buf = html2pdf("https://www.yahoo.co.jp/");
